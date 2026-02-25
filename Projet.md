@@ -11,6 +11,29 @@ Le projet ne se lance pas. S'agissant d'une librairie, il doit être importé da
 Le projet ne sort rien en tant que tel.
 
 
+### 1.2 
+
+- Il existe un Readme dans le dépôt. Ce readme explique l'utilité de ce projet, il explique ausi comment utiliser d'autres documents open-source liés à ce projet. Il y a des warning qui indiquent l'état actuel du projet : il est ici actuellement en maintenance. Il montre aussi les limites de ce projet, son utilisation est par exemple non recommandée pour transformer du java en json sur android. Il explique aussi dans le projet comment rajouter cette dépendance a son projet personnel, qu'il soit Gradle ou Maven, avec les lignes nécessaires. Les prérequis sont énoncés, les dépendances le sont aussi. Il y a 5 liens différents vers toute sorte de documentation du projet. Pour build le projet, la commande "mvn clean verify" est donnée. Pour finir, quelques contributeurs, licences et disclaimer.
+
+- Il existe une grande documentation du projet. Il déclare comment utiliser ce projet en tant que dépendance dans ses projets personnels. Il expliques aussi tous les packages que l'on peut importer séparément et comment les importer comme tel. De plus, il y a un ÉNORME "UserGuide.md" qui explique en outre comment fonctionne le projet et comment l'utiliser, avec des examples. Il y a aussi un "TroubleShootingGuide".
+
+- La pertinence des informations données est bonne, tout dans ce projet est bien défini et expliqué. Il y a même des exemples et des démarches à suivre pour faire fonctionner ce projet dans multiples circonstances. La documentation quant à elle est complète et fonctionnelle. Tout dans le projet est définie et fonctionnel. Toutes les informations sont à jour, et quand une maintenance est faite, ou une refonte, l'utilisateur en est prévenu de par le readme.
+
+
+## 2 
+
+### 2.1
+
+- Le projet recense 158 contributeurs différents. Ils ne sont pas tous équitables quant à leur quantité de commits, ou leur quantités de lignes de code modifiées. Il n'y a que 6 contributeurs avec +100 commits, le 7eme étant à 23 commits. Le projet à été le plus modifié entre 2009 et 2012, puis entre 2022 et 2025.
+
+- Le projet est toujours actif, il y a eu 6 commits depuis début janvier 2026, et il est encore actuellement en maintenance.
+
+- Il y a 11 branches dans le projet, créés en majeur partie il y a +10 ans pour implémenter des design patterns comme strategies, state, refactoring, etc... Actuellement, que 2 branches utilisées : main et une branche dependantbot pour le bot des dépendances.
+
+- L'utilisation des pull request est bel et bien utilisée. Il existe encore 100 pull request, ouverts, et 1107 fermés par le passé.
+
+
+
 ## 3 Architecture logicielle
 
 ### 3.1 Utilisation de bibliothèques extérieures
