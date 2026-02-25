@@ -11,7 +11,7 @@ Le projet ne se lance pas. S'agissant d'une librairie, il doit être importé da
 Le projet ne sort rien en tant que tel.
 
 
-### 1.2 
+### 1.2 Description du projet
 
 - Il existe un Readme dans le dépôt. Ce readme explique l'utilité de ce projet, il explique ausi comment utiliser d'autres documents open-source liés à ce projet. Il y a des warning qui indiquent l'état actuel du projet : il est ici actuellement en maintenance. Il montre aussi les limites de ce projet, son utilisation est par exemple non recommandée pour transformer du java en json sur android. Il explique aussi dans le projet comment rajouter cette dépendance a son projet personnel, qu'il soit Gradle ou Maven, avec les lignes nécessaires. Les prérequis sont énoncés, les dépendances le sont aussi. Il y a 5 liens différents vers toute sorte de documentation du projet. Pour build le projet, la commande "mvn clean verify" est donnée. Pour finir, quelques contributeurs, licences et disclaimer.
 
@@ -20,9 +20,9 @@ Le projet ne sort rien en tant que tel.
 - La pertinence des informations données est bonne, tout dans ce projet est bien défini et expliqué. Il y a même des exemples et des démarches à suivre pour faire fonctionner ce projet dans multiples circonstances. La documentation quant à elle est complète et fonctionnelle. Tout dans le projet est définie et fonctionnel. Toutes les informations sont à jour, et quand une maintenance est faite, ou une refonte, l'utilisateur en est prévenu de par le readme.
 
 
-## 2 
+## 2 Historique du logiciel
 
-### 2.1
+### 2.1 Analyse du git
 
 - Le projet recense 158 contributeurs différents. Ils ne sont pas tous équitables quant à leur quantité de commits, ou leur quantités de lignes de code modifiées. Il n'y a que 6 contributeurs avec +100 commits, le 7eme étant à 23 commits. Le projet à été le plus modifié entre 2009 et 2012, puis entre 2022 et 2025.
 
@@ -127,3 +127,45 @@ Nous étudierons en particulier les paquetages *com.google.gson*, *internal*, *s
 On observe donc une architecture centralisée autour de *com.google.gson* qui, comme d'autres paquetages internes, présente un couplage élevé et participe à des cycles ce qui démontre une forte interdépendance. Au contraire, les paquetages comme *integration* présentent un faible couplage et une indépendance. Une perspective d'amélioration serait de réduire les cycles internes.
 
 
+## 4 Analyse approfondie
+
+### 4.1 Tests
+
+
+
+### 4.2 Commentaires
+
+
+
+### 4.3 Dépréciation
+
+
+
+### 4.4 Duplication de code
+
+
+
+### 4.5 God Classes
+
+
+
+### 4.6 Analyse des méthodes
+
+
+
+
+## 5 Nettoyage de Code et Code smells
+
+### 5.1 Règles de nommage
+
+
+
+### 5.2 Nombre magique
+
+
+
+### 5.3 Structure du code
+
+
+
+### 5.4 Code mort
