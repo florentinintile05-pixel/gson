@@ -127,6 +127,21 @@ Nous étudierons en particulier les paquetages *com.google.gson*, *internal*, *s
 On observe donc une architecture centralisée autour de *com.google.gson* qui, comme d'autres paquetages internes, présente un couplage élevé et participe à des cycles ce qui démontre une forte interdépendance. Au contraire, les paquetages comme *integration* présentent un faible couplage et une indépendance. Une perspective d'amélioration serait de réduire les cycles internes.
 
 
+### 3.4
+
+**Insérer image**
+L'analyse de la profondeur de l'arbre d'héritage nous montre que la majorité des classes du projet a un DIT (Depth of Inheritance Tree) compris entre 1 et 4 avec une moyenne à 1,24. Cette valeur nous indique deux choses :
+* La plupart des classes du projet hérite directement de la classe **Object**
+* L'arbre d'héritage global du projet est très peu profond et la majorité des classes du projet sont indépendantes.
+
+On obtient également à travers ces données des informations sur le NOC (Number of Children) de chaque classe. Les classes **TypeToken** et **TypeAdapter** sont les classes avec le plus de descendant, respectivement 194 et 129, ce qui en fait des classes centrales du projet sachant que toutes les autres ont un nombre d'enfant inférieur à 10.
+
+En se concentrant sur le module **Gson** et en en observant le couplage au sein de ses classes, on remarque que 41% de celles ci ont un COP (Coupling Between Object) dît *extreme*, ce qui en fait des classes instables et complexes. On voit aussi que 20 autres pourcents ont un COP modéré. 
+Cela dit, cette instabilité se trouvant majoritairement dans le package *functional* qui utilise de nombreux composants du systèmes pour assurer les tests de fonctionnement se trouve expliquée.
+
+**Insérer image**
+**Expliquer les données**  
+
 ## 4 Analyse approfondie
 
 ### 4.1 Tests
