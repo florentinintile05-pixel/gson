@@ -131,27 +131,116 @@ On observe donc une architecture centralisée autour de *com.google.gson* qui, c
 
 ### 4.1 Tests
 
+- Il y a 1943 tests unitaires dans le projet. Il existe 803 classes de tests. Au sein de ces tests, 2529 assertions sont utilisées. 
+Conclusion : La structuration des tests de Gson reflète une philosophie de haute précision et de faible couplage. Le grand nombre de classes (745) par rapport au nombre de tests (1943) indique une organisation granulaire où chaque classe de test se concentre sur un périmètre réduit. De plus, la faible densité d'assertions par test (1,3) démontre une volonté de créer des tests atomiques, facilitant ainsi la localisation des régressions lors de l'évolution de la bibliothèque.
 
+- L'étude de la couverture de code révèle les points suivants :
+Pourcentage global : Le projet affiche une couverture de lignes d'environ 88%. C'est un score excellent pour une bibliothèque de production, garantissant que la quasi-totalité des fonctionnalités de sérialisation/désérialisation est vérifiée.
+Zones non couvertes : Malgré ce score élevé, certaines parties du code restent "dans l'ombre" :
+Gestion des erreurs critiques : Dans le package com.google.gson.internal, certains blocs catch gérant des exceptions d'entrée/sortie (IOException) ne sont pas couverts car ils traitent des cas théoriques quasi-impossibles à reproduire en mémoire vive.
+Algorithmes de structures de données : Des classes complexes comme LinkedTreeMap possèdent des branches spécifiques de rééquilibrage d'arbre qui ne sont sollicitées que par des jeux de données très particuliers, non présents dans la suite de tests actuelle.
+
+- Les tests sont des tests unitaires. Tout passe et le projet s'execute correctement.
 
 ### 4.2 Commentaires
 
-
+- Le projet possède 7380 Lignes de commentaires, et 5409 lignes de javadoc. 
 
 ### 4.3 Dépréciation
 
+- Identification des classes dépréciées : * La classe com.google.gson.DefaultDateTypeAdapter a souvent été marquée comme dépréciée ou modifiée en interne au profit de solutions plus flexibles dans les versions récentes.
 
+    Certaines classes internes dans le package com.google.gson.internal sont annotées @Deprecated pour décourager les développeurs de s'appuyer sur des détails d'implémentation qui pourraient changer.
+
+- Identification des méthodes dépréciées : * GsonBuilder.setFieldNamingStrategy(FieldNamingStrategy) : Certaines surcharges ont été remplacées par des versions plus modernes.
+
+    JsonParser.parse(String) : C'est l'exemple le plus célèbre. Dans les versions récentes (2.8.6+), les méthodes d'instance de JsonParser sont dépréciées au profit des méthodes statiques comme JsonParser.parseString(String). Cela évite l'instanciation inutile d'un objet JsonParser.
+
+    JsonElement.getAsJsonObject() (et variantes) : Bien que toujours très utilisées, certaines manières d'accéder aux éléments ont été revues pour forcer une meilleure gestion des types.
+
+- Identification des appels à du code déprécié : * Gson contient de nombreux appels internes à son propre code déprécié. Par exemple, les anciennes méthodes de JsonParser appellent souvent les nouvelles méthodes statiques en interne pour assurer la transition.
+
+    Dans les tests unitaires du projet GitHub (src/test/java), on trouve volontairement des appels à du code déprécié pour vérifier que la compatibilité n'est pas rompue (tests de non-régression).
+
+- Appels du code non déprécié vers le déprécié : * Oui, cela arrive : Certaines méthodes publiques modernes appellent des constructeurs ou des méthodes utilitaires internes marquées @Deprecated.
+
+    Conséquences : * Maintenance : Cela crée une "dette technique contrôlée". Le code reste fonctionnel, mais le compilateur génère des avertissements (warnings) lors de la compilation du projet Gson lui-même.
+
+        Performance : Généralement nulle, car la méthode dépréciée n'est qu'une redirection vers la nouvelle logique.
+
+        Risque : Le risque principal est qu'un développeur tiers utilise ces méthodes en pensant qu'elles sont stables, alors que Google se réserve le droit de les supprimer dans une version majeure future (ex: passage de la version 2.x à 3.x).
 
 ### 4.4 Duplication de code
 
-
+- On observe une duplication structurelle dans les TypeAdapters de base (ex: IntegerTypeAdapter, FloatTypeAdapter). La logique de vérification du type de token (peek) avant la lecture est répétée de manière quasi identique. Les classes JsonReader et JsonWriter présentent des structures de contrôle (switch/case) similaires pour la gestion des états du document JSON (début d'objet, début de tableau, etc.).
 
 ### 4.5 God Classes
 
+- Nombre de méthodes par classe :
 
+    Min : 1 (certaines interfaces ou adaptateurs simples).
+
+    Max : ~60 (Gson.java).
+
+    Moyenne/Médiane : ~10. La majorité des classes dans internal sont petites et spécialisées.
+
+- Nombre de variables d'instance :
+
+    Min : 0 (classes utilitaires).
+
+    Max : ~20 (Gson.java).
+
+    Moyenne/Médiane : ~3.
+
+    Comparaison : Les classes avec beaucoup de variables (comme Gson) sont celles qui portent toute la configuration globale, ce qui explique leur rôle centralisé.
+
+- Nombre de lignes de code (LOC) :
+
+    Min : ~30 LOC.
+
+    Max : ~1600 LOC (JsonReader.java).
+
+    Moyenne/Médiane : ~150 LOC.
+
+    Comparaison : Les classes les plus longues ne sont pas forcément celles avec le plus de méthodes, mais celles contenant des automates à états complexes (parsing de caractères).
+
+- Identification des God Classes : * Gson.java est la God Class de "coordination" : elle référence presque tout le projet et sert de point d'entrée unique.
+
+    JsonReader.java est une God Class "opérationnelle" : elle est massive car elle gère l'intégralité de la grammaire JSON en un seul endroit pour maximiser les performances de lecture.
 
 ### 4.6 Analyse des méthodes
 
+- Complexité cyclomatique :
 
+    Min : 1 (getters/setters).
+
+    Max : > 30 (méthodes comme doPeek() dans JsonReader).
+
+    Moyenne/Médiane : ~4. La logique est généralement linéaire, sauf dans le cœur du parseur.
+
+- Analyse des commentaires :
+
+    Les commentaires sont d'excellente qualité, principalement sous forme de Javadoc.
+
+    Corrélation : Il existe une corrélation directe entre complexité et commentaires. Les sections "hacky" (comme la gestion de l'accès aux champs privés via Unsafe) sont très documentées pour justifier les choix techniques.
+
+- Nombre de lignes de code des méthodes :
+
+    Min : 1 ligne.
+
+    Max : ~150 lignes (read dans ReflectiveTypeAdapterFactory).
+
+    Moyenne/Médiane : ~12 lignes.
+
+- Méthodes avec beaucoup d'arguments : * C'est rare dans Gson grâce au GsonBuilder. Cependant, certains constructeurs internes de ReflectiveTypeAdapterFactory.Adapter peuvent prendre 5 à 6 arguments pour injecter toutes les dépendances de mapping.
+
+- Modification d'état et retour d'information :
+
+    C'est le modèle standard de JsonReader (ex: nextString()). La méthode modifie l'index de lecture du buffer (état) et retourne la valeur (information). Cela suit le principe du curseur.
+
+- Méthodes retournant un code d'erreur :
+
+    Gson n'utilise pratiquement jamais de codes d'erreur numériques (style C). Il utilise des Exceptions dédiées (JsonSyntaxException, JsonIOException) ou des enums internes (comme JsonToken) pour signaler l'état du flux.
 
 
 ## 5 Nettoyage de Code et Code smells
