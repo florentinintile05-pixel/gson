@@ -4,7 +4,7 @@
 
 ### 1.1 Utilité du projet
 
-GSON est une librairie Java qui sert de pont entre des objets Java et la structure d'un fichier JSON. En clair, il permet aux utilisateur de créer un objet Java à partir d'une description JSON ou, à contrario, de créer la description JSON d'un objet Java. GSON n'est pas le premier à proposer cette fonctionnalité, mais il se démarque en offrant la possibilité aux utilisateur de passer de Java à JSON sans même avoir besoin du code source Java, là où les autres projets open-sources ayant la même aspiration sont impossible d'utilisation si l'on ne rajoute pas une balise spéciale dans le code source Java.
+GSON est une librairie Java qui sert de pont entre des objets Java et la structure d'un fichier JSON. En clair, elle fournit une API qui permet aux utilisateur de créer un objet Java à partir d'une description JSON ou, à contrario, de créer la description JSON d'un objet Java. GSON n'est pas le premier à proposer cette fonctionnalité, mais il se démarque en offrant la possibilité aux utilisateur de passer de Java à JSON sans même avoir besoin du code source Java, là où les autres projets open-sources ayant la même aspiration sont impossible d'utilisation si l'on ne rajoute pas une balise spéciale dans le code source Java.
 
 Le projet ne se lance pas. S'agissant d'une librairie, il doit être importé dans le projet d'un utilisateur, via Gradle ou Maven, qui pourra alors utiliser les méthodes far de GSON, à savoir **toJson()** et **fromJson()** qui permettent de créer une description JSON d'un objet JAVA et inversement.
 
@@ -260,16 +260,19 @@ Algorithmes de structures de données : Des classes complexes comme LinkedTreeMa
 
 ## 5 Nettoyage de Code et Code smells
 
+On va ici s'intéresser plus particulièrement au module **Gson**, le module principal du projet.
+
 ### 5.1 Règles de nommage
 
-
+L'analyse des règles de nommage montre le respect des conventions Java. En effet les classes sont nommés avec du CamelCase, certaines d'entres elles ont, dans leur nom, le design pattern qu'elles utilisent (ExclusionStrategy, GsonBuilder, ect) et chacunes d'entres elle ont un nom spécifique qui explique correctement leur fonction. Chaque nom de classe est prononçable tout comme les noms de paquetages qui représentent fidèlement leur utilité.
 
 ### 5.2 Nombre magique
 
-
+La présence de nombres magiques est extremement faible sachant que la plupart d'entres eux son des 0, des 1 ou des -1 qui sont des valeurs magiques plus ou moins acceptables en Java. Les quelques nombres magiques non acceptables sont présents dans le module **Gson Metrics** dans la déclaration de buffers mais restent trés peu nombreux. Malgrès tout, il serait intéressant de corriger ces implémentations incorrecte en transformant ces nombres magiques en variables statiques ou en constantes.
 
 ### 5.3 Structure du code
-
-
+La structure interne des classes est faite de manière à ce que les variables d'instance soient déclarées en début de classe, avant les méthodes. De plus les méthodes publiques précèdent toujours les quelques méthodes privées ce qui améliorer la compréhension de l'API.
 
 ### 5.4 Code mort
+**Isérer image**
+On peut observer que dans le module **Gson**, il y a un nombre impréssionnant de 1972 warnings dû à des déclaration unitilisées. Bien que ce chiffre doit être revu à la baisse dans notre cas car la plus part de ces warning viennent de classes de tests qui logiquement ne doivent etre utilisées nulle part, ce n'est pas le cas de toutes les classes et cela pourrait etre amélioré.
