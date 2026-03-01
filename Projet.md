@@ -32,7 +32,7 @@ Le projet ne sort rien en tant que tel.
 
 - L'utilisation des pull request est bel et bien utilisée. Il existe encore 100 pull request, ouverts, et 1107 fermés par le passé.
 
-
+AMÉLIORATIONS POSSIBLE : Réduire le nombre de Pull Requests ouvertes en instaurant un processus de tri régulier et des règles de contribution plus strictes.
 
 ## 3 Architecture logicielle
 
@@ -65,7 +65,7 @@ Il est aussi des modules qui utilisent des dépendances qu'ils n'ont pas déclar
 * Gson Metrics -> utilise *com.google.caliper:caliper-api:jar:1.0-beta-3:compile*, *com.google.guava:guava:jar:30.1.1-jre:compile*, *com.fasterxml.jackson.core:jackson-core:jar:2.20.1:compile* et *com.fasterxml.jackson.core:jackson-annotations:jar:2.20:compile*
 * Gson Protobuf Support -> utilise *com.google.errorprone:error_prone_annotations:jar:2.45.0:compile*
 
-**Partie sur l'utilité des librairies A FAIRE**
+AMÉLIORATION POSSIBLE : Supprimer les dépendances déclarées mais inutilisées et déclarer explicitement celles utilisées implicitement pour améliorer la propreté du pom.xml.
 
 ### 3.2 Organisation en paquetages
 
@@ -103,6 +103,7 @@ Quand on analyse les noms des paquetages, on comprend assez facilement l'utilit�
 En revanche, aucun nom de paquetage ne nous indique l'utilisation d'un design pattern en particulier. 
 On sait l'existence et la liaison du projet avec une base de donnée grâce au paquetage au nom explicite *intenal.sql*.
 
+AMÉLIORATIONS POSSIBLE : Harmoniser la hiérarchie des tests avec celle du code source pour améliorer la lisibilité et la maintenabilité. Clarifier ou supprimer les packages inutilisés comme integration si leur rôle reste marginal.
 
 ### 3.3 Répartition des classes dans les paquetages
 
@@ -126,6 +127,7 @@ Nous étudierons en particulier les paquetages *com.google.gson*, *internal*, *s
 
 On observe donc une architecture centralisée autour de *com.google.gson* qui, comme d'autres paquetages internes, présente un couplage élevé et participe à des cycles ce qui démontre une forte interdépendance. Au contraire, les paquetages comme *integration* présentent un faible couplage et une indépendance. Une perspective d'amélioration serait de réduire les cycles internes.
 
+AMÉLIORATION POSSIBLE : Rééquilibrer les packages trop volumineux (ex : functional) en les subdivisant logiquement afin de réduire la complexité.
 
 ### 3.4
 
@@ -138,6 +140,8 @@ On obtient également à travers ces données des informations sur le NOC (Numbe
 
 En se concentrant sur le module **Gson** et en en observant le couplage au sein de ses classes, on remarque que 41% de celles ci ont un COP (Coupling Between Object) dît *extreme*, ce qui en fait des classes instables et complexes. On voit aussi que 20 autres pourcents ont un COP modéré. 
 Cela dit, cette instabilité se trouvant majoritairement dans le package *functional* qui utilise de nombreux composants du systèmes pour assurer les tests de fonctionnement se trouve expliquée.
+
+AMÉLIORATION POSSIBLE : Isoler les classes à très fort couplage (COP extrême) afin de diminuer leur dépendance au reste du système.
 
 **Insérer image**
 **Expliquer les données**  
@@ -157,9 +161,13 @@ Algorithmes de structures de données : Des classes complexes comme LinkedTreeMa
 
 - Les tests sont des tests unitaires. Tout passe et le projet s'execute correctement.
 
+AMÉLIORATION POSSIBLE : Ajouter des cas de test couvrant explicitement les branches actuellement non couvertes (ex : gestion d’exceptions rares et rééquilibrage d’arbres).
+
 ### 4.2 Commentaires
 
 - Le projet possède 7380 Lignes de commentaires, et 5409 lignes de javadoc. 
+
+AMÉLIORATION POSSIBLE : Nettoyer les commentaires redondants et moderniser certaines Javadoc pour les aligner avec les versions actuelles de l’API.
 
 ### 4.3 Dépréciation
 
@@ -185,9 +193,13 @@ Algorithmes de structures de données : Des classes complexes comme LinkedTreeMa
 
         Risque : Le risque principal est qu'un développeur tiers utilise ces méthodes en pensant qu'elles sont stables, alors que Google se réserve le droit de les supprimer dans une version majeure future (ex: passage de la version 2.x à 3.x).
 
+AMÉLIORATION POSSIBLE : Ajouter des annotations et documentations plus visibles sur les API destinées à disparaître.
+
 ### 4.4 Duplication de code
 
 - On observe une duplication structurelle dans les TypeAdapters de base (ex: IntegerTypeAdapter, FloatTypeAdapter). La logique de vérification du type de token (peek) avant la lecture est répétée de manière quasi identique. Les classes JsonReader et JsonWriter présentent des structures de contrôle (switch/case) similaires pour la gestion des états du document JSON (début d'objet, début de tableau, etc.).
+
+AMÉLIORATION POSSIBLE : Factoriser la logique répétée des TypeAdapters dans une classe abstraite ou utilitaire commune.
 
 ### 4.5 God Classes
 
@@ -223,6 +235,8 @@ Algorithmes de structures de données : Des classes complexes comme LinkedTreeMa
 
     JsonReader.java est une God Class "opérationnelle" : elle est massive car elle gère l'intégralité de la grammaire JSON en un seul endroit pour maximiser les performances de lecture.
 
+AMÉLIORATION POSSIBLE : Décomposer Gson.java en composants plus spécialisés (configuration, instanciation, cache, etc.) pour réduire son rôle centralisateur.
+
 ### 4.6 Analyse des méthodes
 
 - Complexité cyclomatique :
@@ -257,6 +271,8 @@ Algorithmes de structures de données : Des classes complexes comme LinkedTreeMa
 
     Gson n'utilise pratiquement jamais de codes d'erreur numériques (style C). Il utilise des Exceptions dédiées (JsonSyntaxException, JsonIOException) ou des enums internes (comme JsonToken) pour signaler l'état du flux.
 
+AMÉLIORATION POSSIBLE : Réduire le nombre d’arguments dans certains constructeurs internes via des objets de configuration intermédiaires.
+
 
 ## 5 Nettoyage de Code et Code smells
 
@@ -266,13 +282,21 @@ On va ici s'intéresser plus particulièrement au module **Gson**, le module pri
 
 L'analyse des règles de nommage montre le respect des conventions Java. En effet les classes sont nommés avec du CamelCase, certaines d'entres elles ont, dans leur nom, le design pattern qu'elles utilisent (ExclusionStrategy, GsonBuilder, ect) et chacunes d'entres elle ont un nom spécifique qui explique correctement leur fonction. Chaque nom de classe est prononçable tout comme les noms de paquetages qui représentent fidèlement leur utilité.
 
+AMÉLIORATION POSSIBLE : Ajouter une vérification automatique des conventions via un outil comme Checkstyle pour garantir leur maintien dans le temps.
+
 ### 5.2 Nombre magique
 
 La présence de nombres magiques est extremement faible sachant que la plupart d'entres eux son des 0, des 1 ou des -1 qui sont des valeurs magiques plus ou moins acceptables en Java. Les quelques nombres magiques non acceptables sont présents dans le module **Gson Metrics** dans la déclaration de buffers mais restent trés peu nombreux. Malgrès tout, il serait intéressant de corriger ces implémentations incorrecte en transformant ces nombres magiques en variables statiques ou en constantes.
 
+AMÉLIORATION POSSIBLE : Remplacer les valeurs numériques non explicites par des constantes nommées afin d’améliorer la lisibilité et la maintenabilité.
+
 ### 5.3 Structure du code
 La structure interne des classes est faite de manière à ce que les variables d'instance soient déclarées en début de classe, avant les méthodes. De plus les méthodes publiques précèdent toujours les quelques méthodes privées ce qui améliorer la compréhension de l'API.
+
+AMÉLIORATION POSSIBLE : Formaliser les conventions de structure dans un guide de contribution pour garantir leur cohérence future.
 
 ### 5.4 Code mort
 **Isérer image**
 On peut observer que dans le module **Gson**, il y a un nombre impréssionnant de 1972 warnings dû à des déclaration unitilisées. Bien que ce chiffre doit être revu à la baisse dans notre cas car la plus part de ces warning viennent de classes de tests qui logiquement ne doivent etre utilisées nulle part, ce n'est pas le cas de toutes les classes et cela pourrait etre amélioré.
+
+AMÉLIORATION POSSIBLE : Réduire les warnings dans les modules de test afin d’améliorer la qualité perçue du projet.
